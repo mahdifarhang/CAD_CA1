@@ -1,11 +1,11 @@
 module test_bench();
 
-  parameter N = 4
+  parameter N = 4;
 
   reg [N-1:0] a, b;
   reg reset, load, clk;
-  reg [N-1:0] sum;
-  reg cout;
+  wire [N-1:0] sum;
+  wire cout;
 
   serial_adder Adder (a, b, reset, load, clk, sum, cout);
 

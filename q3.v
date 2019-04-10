@@ -11,29 +11,30 @@ endmodule
 module shift_reg_in #(parameter N = 4) (clk, rst, in, ld_en, shiftr, out);
   input clk, rst, ld_en, shiftr;
   input [N-1:0] in;
-  output out;
+  output reg out;
 
   reg [N-1:0] data;
   always @(posedge clk, posedge rst) begin
     if (rst) begin
-      data <= N'b0;
+      data <= 4'b0;
       out <= 1'b0;
     end
     else if(ld_en)  data <= in;
     else if(shiftr) begin
       out <= data[0];
-      data = {1'b0, data[N-1:1]};
+      data <= {1'b0, data[N-1:1]};
     end
   end
 endmodule
 
-module shift_reg_out #(parameter N = 4) (clk, rst, ld_en, in, data)
+module shift_reg_out #(parameter N = 4) (clk, rst, ld_en, in, data);
   input clk, rst, ld_en, in;
-  output reg [N-1:0] data
+  output reg [N-1:0] data;
 
   always @(posedge clk, posedge rst) begin
-    if(rst) data = N'b0;
+    if(rst) data = 4'b0;
     else if(ld_en)  data = {in, data[N-1:1]};
+  end
 endmodule
 
 module one_bit_FA (a, b, c, s, cout);
@@ -86,4 +87,4 @@ module serial_adder #(parameter N = 4)
       //3'b111:
     endcase
   end
-end module
+endmodule
