@@ -1,3 +1,4 @@
+`timescale 1 ns/ 1 ns
 module test_bench();
 
   parameter N = 4;
@@ -25,10 +26,36 @@ module test_bench();
     reset = 1'b1;
     #20
     reset = 1'b0;
-    #100
-    a = 4'b1010;
+    a = 4'b1111;
     b = 4'b0111;
-    #1000
+    #20
+    load = 1'b1;
+    #40
+    load = 1'b0;
+    #300
+
+
+    reset = 1'b1;
+    #20
+    reset = 1'b0;
+    a = 4'b1110;
+    b = 4'b0111;
+    #20
+    load = 1'b1;
+    #40
+    load = 1'b0;
+    #300
+
+    reset = 1'b1;
+    #20
+    reset = 1'b0;
+    a = 4'b010;
+    b = 4'b1001;
+    #20
+    load = 1'b1;
+    #40
+    load = 1'b0;
+    #300
     $stop;
   end
 endmodule

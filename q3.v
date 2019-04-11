@@ -16,7 +16,7 @@ module shift_reg_in #(parameter N = 4) (clk, rst, in, ld_en, shiftr, out);
   reg [N-1:0] data;
   always @(posedge clk, posedge rst) begin
     if (rst) begin
-      data <= 4'b0;
+      data <= 0;//N'b0
       out <= 1'b0;
     end
     else if(ld_en)  data <= in;
@@ -32,7 +32,7 @@ module shift_reg_out #(parameter N = 4) (clk, rst, ld_en, in, data);
   output reg [N-1:0] data;
 
   always @(posedge clk, posedge rst) begin
-    if(rst) data = 4'b0;
+    if(rst) data = 0;//N'b0
     else if(ld_en)  data = {in, data[N-1:1]};
   end
 endmodule
@@ -66,24 +66,27 @@ module serial_adder #(parameter N = 4)
   assign sum = reg_out_data;
 
   reg [2:0] state, next_state;
-  reg [N:0] counter;
+  reg [N:0] counter = 0;
 
   always @(posedge clk, posedge reset) begin
-    if (reset) state <= 3'b000;
+    if (reset) begin
+      state <= 3'b000;
+      counter = 0;
+    end
     else state <= next_state;
   end
 
-  always @(state) begin
+  always @(state, load) begin
     next_state = 3'b000;
     ld_en_a = 1'b0; ld_en_b = 1'b0; ld_en_c = 1'b0; shift_en_out = 1'b0; shiftr_a = 1'b0; shiftr_b = 1'b0;
     case(state)
-      3'b000: next_state = 3'b001;
-      3'b001: begin next_state = 3'b010; ld_en_a = 1'b1; ld_en_b = 1'b1; end
-      3'b010: next_state = 3'b011;
-      3'b011: begin next_state = 3'b100; ld_en_c = 1'b1; shift_en_out = 1'b1; end
-      3'b100: begin next_state = (counter < N) ? 3'b101 : 3'b011; shiftr_a = 1'b1; shiftr_b = 1'b1; end
-      3'b101: next_state = 3'b000;
-      //3'b110:
+      3'b000: next_state = (load) ? 3'b001 : 3'b000;
+      3'b001: next_state = (~load) ? 3'b010 : 3'b001;
+      3'b010: begin next_state = 3'b011; ld_en_a = 1'b1; ld_en_b = 1'b1; end
+      3'b011: next_state = 3'b100;
+      3'b100: begin next_state = 3'b101; ld_en_c = 1'b1; shift_en_out = 1'b1; counter = counter + 1; end
+      3'b101: begin next_state = (counter > N) ? 3'b110 : 3'b100; shiftr_a = 1'b1; shiftr_b = 1'b1; end
+      3'b110: next_state = 3'b000;
       //3'b111:
     endcase
   end
