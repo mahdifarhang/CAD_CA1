@@ -1,7 +1,7 @@
 `timescale 1 ns/ 1 ns
 module test_bench();
   parameter N = 8;
-  parameter logN = 8;
+  parameter logN = 3;
 //to change N from 4 to 8:
 //change the final delays in test bench from 300 to 500. change the a,b numbers in test bench 'pay attention to number of digits 8'b...'
 //change all the Ns in test bench file and modules.

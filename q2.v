@@ -1,14 +1,14 @@
 module mux #(parameter N = 1) (a, b, sel, out);
   input [N-1:0] a, b;
   input sel;
-  output reg [N-1:0] out;
+  output [N-1:0] out;
 
-  always @(a, b, sel) begin
-    if (sel)
-      out = b;
-    else
-      out = a;
-  end
+  wire w1, w2, w3;
+  not n1(w1, sel);
+  nand a1(w2, a, w1);
+  nand a2(w3, b, sel);
+  nand o1(out, w2, w3);
+
 endmodule
 
 module barrel_shifter #(parameter N = 8, parameter logN = 3) (in, shift_selection, out);
